@@ -1,0 +1,75 @@
+{
+  "info": {
+    "name": "News Aggregator API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "news-aggregator-collection"
+  },
+  "item": [
+    {
+      "name": "Signup",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:3000/users/signup", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["users", "signup"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Clark Kent\",\n  \"email\": \"clark@superman.com\",\n  \"password\": \"Krypt()n8\",\n  \"preferences\": [\"movies\", \"comics\"]\n}"
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:3000/users/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["users", "login"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"clark@superman.com\",\n  \"password\": \"Krypt()n8\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Preferences",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:3000/users/preferences", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["users", "preferences"] }
+      }
+    },
+    {
+      "name": "Update Preferences",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:3000/users/preferences", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["users", "preferences"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"preferences\": [\"movies\", \"comics\", \"games\"]\n}"
+        }
+      }
+    },
+    {
+      "name": "Fetch News",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:3000/news", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["news"] }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
