@@ -1,7 +1,12 @@
 const tap = require('tap');
+const { setupDB, teardownDB } = require('./setup');
+tap.before(async () => {
+  await setupDB();
+});
 const supertest = require('supertest');
 const app = require('../app');
 const server = supertest(app);
+
 
 const mockUser = {
     name: 'Clark Kent',
@@ -16,7 +21,7 @@ let token = '';
 
 tap.test('POST /users/signup', async (t) => { 
     const response = await server.post('/users/signup').send(mockUser);
-    t.equal(response.status, 200);
+    t.equal(response.status, 201);
     t.end();
 });
 
@@ -96,6 +101,6 @@ tap.test('GET /news without token', async (t) => {
 
 
 
-tap.teardown(() => {
-    process.exit(0);
+tap.teardown(async () => {
+    await teardownDB();
 });
