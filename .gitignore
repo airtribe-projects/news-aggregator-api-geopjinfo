@@ -2,3 +2,6 @@ node_modules
 .tap
 .env
 .env.*
+.idea
+.vscode
+.github
