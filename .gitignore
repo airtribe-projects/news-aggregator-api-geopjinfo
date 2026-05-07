@@ -1,7 +1,9 @@
 node_modules
+coverage
 .tap
 .env
 .env.*
 .idea
 .vscode
 .github
+*.log
