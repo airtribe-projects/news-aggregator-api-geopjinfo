@@ -1,0 +1,425 @@
+{
+  "info": {
+    "_postman_id": "ce5d4839-8ce9-44c3-b4ca-9ba3d16bc349",
+    "name": "News Aggregator API",
+    "description": "Postman collection generated from the Swagger/OpenAPI definitions in src/config/swagger.js and src/routes/*.js.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwtToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Docs",
+      "item": [
+        {
+          "name": "Get OpenAPI JSON",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/docs.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "docs.json"
+              ]
+            },
+            "description": "Returns the generated OpenAPI document served by the app."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Returns application and database liveness details."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{userName}}\",\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "register"
+              ]
+            },
+            "description": "Registers a new user account."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "const token = body.token || body.data?.token;",
+                  "const user = body.user || body.data?.user;",
+                  "pm.test('Login returns a token', function () {",
+                  "  pm.expect(token).to.be.a('string').and.not.empty;",
+                  "});",
+                  "if (token) pm.environment.set('jwtToken', token);",
+                  "if (user?.id) pm.environment.set('userId', user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Authenticates a user and stores the returned JWT in the active environment."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Preferences",
+      "item": [
+        {
+          "name": "Get Preferences",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "preferences"
+              ]
+            },
+            "description": "Gets the authenticated user's current news preferences."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Preferences",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categories\": {{preferredCategories}},\n  \"languages\": {{preferredLanguages}},\n  \"country\": \"{{preferredCountry}}\",\n  \"keywords\": {{preferredKeywords}},\n  \"sources\": {{preferredSources}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "preferences"
+              ]
+            },
+            "description": "Updates the authenticated user's news preferences."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "News",
+      "item": [
+        {
+          "name": "Get Top Headlines",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "const articles = body.news || body.data?.news || [];",
+                  "pm.test('News response returns an array', function () {",
+                  "  pm.expect(articles).to.be.an('array');",
+                  "});",
+                  "if (Array.isArray(articles) && articles.length > 0) {",
+                  "  const article = articles[0];",
+                  "  const articleId = article.articleId || article.url;",
+                  "  if (articleId) {",
+                  "    pm.environment.set('articleId', articleId);",
+                  "    pm.environment.set('encodedArticleId', encodeURIComponent(articleId));",
+                  "  }",
+                  "  if (article.title) pm.environment.set('articleTitle', article.title);",
+                  "  if (article.url) pm.environment.set('articleUrl', article.url);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/news",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news"
+              ]
+            },
+            "description": "Gets personalized top headlines and caches the first article into environment variables for subsequent requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Read Articles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/news/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "read"
+              ]
+            },
+            "description": "Returns articles already marked as read by the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Favorite Articles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/news/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "favorites"
+              ]
+            },
+            "description": "Returns articles already marked as favorite by the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Search News",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/news/search/{{searchKeyword}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "search",
+                "{{searchKeyword}}"
+              ]
+            },
+            "description": "Searches for articles by keyword."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Article As Read",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const articleId = pm.environment.get('articleId');",
+                  "if (articleId) pm.environment.set('encodedArticleId', encodeURIComponent(articleId));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"articleId\": \"{{articleId}}\",\n  \"title\": \"{{articleTitle}}\",\n  \"url\": \"{{articleUrl}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/news/{{encodedArticleId}}/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{encodedArticleId}}",
+                "read"
+              ]
+            },
+            "description": "Marks the selected article as read."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Article As Favorite",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const articleId = pm.environment.get('articleId');",
+                  "if (articleId) pm.environment.set('encodedArticleId', encodeURIComponent(articleId));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"articleId\": \"{{articleId}}\",\n  \"title\": \"{{articleTitle}}\",\n  \"url\": \"{{articleUrl}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/news/{{encodedArticleId}}/favorite",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{encodedArticleId}}",
+                "favorite"
+              ]
+            },
+            "description": "Marks the selected article as a favorite."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ]
+}
