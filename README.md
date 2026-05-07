@@ -6,7 +6,6 @@
 A personalized news aggregator REST API built with Node.js (ES Modules), Express, MongoDB, and JWT authentication. Fetches news from NewsAPI.org based on per-user preferences, with in-memory caching, article interaction tracking, and keyword search.
 
 ---
-
 ## Features
 
 - **User Authentication** - Registration and login with bcrypt password hashing and JWT sessions
